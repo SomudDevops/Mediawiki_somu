@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mediawiki
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mediawiki
+  template:
+    metadata:
+      labels:
+        app: mediawiki
+    spec:
+      containers:
+        - name: mediawiki
+          image: mediawiki:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: MYSQL_HOST
+              value: mysql
+            - name: MYSQL_DATABASE
+              value: my_wiki
+            - name: MYSQL_USER
+              value: wikiuser
+            - name: MYSQL_PASSWORD
+              value: THISpasswordSHOULDbeCHANGED
