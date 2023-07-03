@@ -73,8 +73,81 @@ Configure the Helm chart:
       pullPolicy: IfNotPresent
     ```
 
-Add the database deployment and service:
-  - Open the templates directory and create a new file named database.yaml.
-  - 
+Add the Helm chart repository: Add the Bitnami Helm chart repository, which provides the MediaWiki Helm chart. Run the following command to add the repository:
+
+    ```
+    helm repo add bitnami https://charts.bitnami.com/bitnami
+    helm repo update
+    ```
+Customize the values: 
+  - Create a values.yaml file to customize the configuration options for the MediaWiki deployment. You can use the default values provided by the Helm chart or override them as needed. Here's an example of a basic values.yaml file:
+
+    ```
+    replicaCount: 2
+    fullnameOverride: my-wiki
+    wikiName: My Wiki
+    ```
+You can customize other parameters such as image tags, persistence settings, ingress rules, etc., according to your requirements. Refer to the Helm chart documentation for all available options.
+
+Deploy MediaWiki: 
+  - Run the following command to deploy MediaWiki using Helm:
+
+    ```
+    helm install my-wiki bitnami/mediawiki -f values.yaml
+    ```
+Replace my-wiki with the desired release name for your MediaWiki installation. The -f flag specifies the path to your custom values.yaml file.
+
+Verify the deployment: 
+  - Use the following command to check the status of your deployment:
+
+    ```
+    kubectl get pods
+    ```
+    
+You should see the MediaWiki pods running and ready.
+
+Ensure you have an Ingress controller running in your Kubernetes cluster. Popular choices include Nginx Ingress Controller, Traefik, or HAProxy Ingress.
+Update your values.yaml file or create a new one with the following values to enable Ingress:
+
+    ```
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: <ingress-controller-class> # Replace with your Ingress controller class
+        # Add any additional Ingress annotations as needed
+      hosts:
+        - name: my-wiki.example.com # Replace with your desired hostname
+          path: /
+    ```
+    
+Adjust the ingress.annotations section to match the annotations required by your Ingress controller. Set the hosts section to your desired hostname or domain.
+Upgrade your Helm release to apply the changes:
+
+    ```
+    helm upgrade my-wiki bitnami/mediawiki -f values.yaml
+    ```
+Once the Ingress resource is created and propagated, you can access MediaWiki by navigating to the specified hostname or domain (e.g., http://my-wiki.example.com).
+
+##### Port-Forwarding Tunnel:
+
+If you don't have an Ingress controller available or prefer a simpler setup for local development or debugging purposes, you can use port-forwarding to access MediaWiki directly.
+Here are the steps to create a port-forwarding tunnel to the MediaWiki service:
+
+Identify the name of the MediaWiki pod in your cluster by running:
+
+    ```
+    kubectl get pods
+    ```
+Create the port-forwarding tunnel by running the following command, replacing <pod-name> and <local-port>:
+    ```
+    kubectl port-forward <pod-name> <local-port>:80
+    ```
+    
+<pod-name> should be replaced with the name of the MediaWiki pod, and <local-port> should be the local port number you want to use (e.g., 8080).
+
+Once the port-forwarding tunnel is established, you can access MediaWiki by opening your web browser and navigating to http://localhost:<local-port> (e.g., http://localhost:8080).
+
+Remember that the port-forwarding approach is typically used for local testing or debugging and may not be suitable for production environments.
+
 
 
