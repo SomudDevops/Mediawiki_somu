@@ -75,37 +75,6 @@ Configure the Helm chart:
 
 Add the database deployment and service:
   - Open the templates directory and create a new file named database.yaml.
-  - Add the following content to the database.yaml file:
+  - 
 
-Update your deployment.yml file with below content:
 
-```
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mediawiki
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: mediawiki
-  template:
-    metadata:
-      labels:
-        app: mediawiki
-    spec:
-      containers:
-        - name: mediawiki
-          image: mediawiki:latest
-          ports:
-            - containerPort: 80
-          env:
-            - name: MYSQL_HOST
-              value: mysql
-            - name: MYSQL_DATABASE
-              value: my_wiki
-            - name: MYSQL_USER
-              value: wikiuser
-            - name: MYSQL_PASSWORD
-              value: password
-```
