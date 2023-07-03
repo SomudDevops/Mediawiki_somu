@@ -29,6 +29,8 @@ Then you can run the script using the following command:
 ```
 After Installing Ansible and required tools to start, follow below steps:
 
+Install Docker Desktop locally and enable Kubernetes service in settings. You can use the same K8s cluster for this task.
+
 Set up the Dockerfile:
   - Create a new directory for your MediaWiki application.
   - Inside the directory, create a file named Dockerfile.
