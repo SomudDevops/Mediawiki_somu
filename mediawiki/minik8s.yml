@@ -1,0 +1,30 @@
+---
+- name: Create Minikube Kubernetes cluster
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Install required packages
+      become: true
+      apt:
+        name:
+          - docker.io
+          - conntrack
+        state: present
+
+    - name: Download and install Minikube
+      become: true
+      command: curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && mv minikube /usr/local/bin/
+
+    - name: Start Minikube cluster
+      become: true
+      command: minikube start --driver=docker
+
+    - name: Set kubectl context
+      become: true
+      command: minikube kubectl -- get pods
+
+    - name: Enable addons
+      become: true
+      command: minikube addons enable dashboard

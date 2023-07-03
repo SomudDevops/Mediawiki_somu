@@ -1,0 +1,38 @@
+---
+- name: Create a VM in GCP
+  hosts: localhost
+  gather_facts: false
+  vars:
+    project_id: "your-project-id"
+    credentials_file: "/path/to/your/credentials.json"
+    zone: "us-central1-a"
+    instance_name: "my-instance"
+    machine_type: "n1-standard-1"
+    disk_size_gb: 10
+    image_family: "ubuntu-1804-lts"
+    network: "default"
+    subnetwork: "default"
+  tasks:
+    - name: Create a VM instance
+      gcp_compute_instance:
+        name: "{{ instance_name }}"
+        machine_type: "{{ machine_type }}"
+        disks:
+          - auto_delete: true
+            boot: true
+            initialize_params:
+              source_image_family: "{{ image_family }}"
+              disk_size_gb: "{{ disk_size_gb }}"
+        network_interfaces:
+          - network: "{{ network }}"
+            subnetwork: "{{ subnetwork }}"
+        project: "{{ project_id }}"
+        zone: "{{ zone }}"
+        auth_kind: "serviceaccount"
+        service_account_file: "{{ credentials_file }}"
+      register: instance
+
+    - name: Print instance details
+      debug:
+        var: instance
+
